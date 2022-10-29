@@ -9,11 +9,11 @@
 	}
 </style>
 <body>
-<div style="margin:0.25in; text-align:center">
+<div style="margin:auto; text-align:center">
 	<h2>Brent's Risk Simulator</h2>
 </div>
 
-<div style="border-style:solid; border-width:1px; padding:0.1in; margin:0.25in">
+<div style="border-style:solid; border-width:1px; padding:0.1in; width:75%; max-width:500px; margin:auto;">
 	<span style="width:1.5in; display:inline-block">Attacker armies</span>
 		<input type="range" min="2" max="50" value="5" class="slider" style="width:250px" id="attackers">
 		<label for="attackers" id="attackersLabel"></label>
@@ -25,8 +25,8 @@
 	<span style="width:1.5in; display:inline-block">Runs</span>
 		<input type="range" min="50" max="1000" value="250" class="slider" id="runs">
 		<label for="runs" id="runsLabel"></label>
-	<p/>
-	<div id="result" style="font-weight:bold"></div>
+	<hr/>
+	<div id="result" style="font-weight:bold; text-align:center"></div>
 </div>
 
 <script>
