@@ -66,13 +66,10 @@ function combat(attacker, defender) {
 
 //----------------------------------------------------------------------
 function multipleCombat(attacker, defender, runs) {
-	console.log('--- multipleCombat', attacker, defender, runs)
 	let attackerWins = 0
 	for (let i = 0; i < runs; i++) {
-		console.log('run', i)
 		j = combat(attacker, defender)
 		attackerWins += j
-		console.log('returned', j,'so attackerWins now', attackerWins)
 	}
 	return "Attacker wins " + Math.round(100 * attackerWins / runs) + '%'
 }
@@ -82,7 +79,6 @@ function updateAll() {
 	const attackers = document.getElementById("attackers")
 	const defenders = document.getElementById("defenders")
 	const runs = document.getElementById("runs")
-	console.log('attackers value', attackers.value)
 
 	document.getElementById("attackersLabel").innerHTML = attackers.value
 	document.getElementById("defendersLabel").innerHTML = defenders.value
