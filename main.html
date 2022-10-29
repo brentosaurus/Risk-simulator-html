@@ -3,23 +3,28 @@
 <head>
 <title>Brent's Risk Simulator</title>
 </head>
+<style>
+	body {
+		font-family:sans-serif;
+	}
+</style>
 <body>
 <h1>Brent's Risk Simulator</h1>
 
 <div>
-	Attacker armies
-		<input type="range" min="2" max="100" value="5" class="slider" id="attackers">
+	<span style="width:150px; display:inline-block">Attacker armies</span>
+		<input type="range" min="2" max="50" value="5" class="slider" style="width:250px" id="attackers">
 		<label for="attackers" id="attackersLabel"></label>
 	<p/>
-	Defender armies
-		<input type="range" min="1" max="100" value="5" class="slider" id="defenders">
+	<span style="width:150px; display:inline-block">Defender armies</span>
+		<input type="range" min="1" max="50" value="5" class="slider" style="width:250px" id="defenders">
 		<label for="defenders" id="defendersLabel"></label>
 	<p/>
-	Runs
-		<input type="range" min="3" max="1000" value="3" class="slider" id="runs">
+	<span style="width:150px; display:inline-block">Runs</span>
+		<input type="range" min="50" max="1000" value="250" class="slider" id="runs">
 		<label for="runs" id="runsLabel"></label>
 	<p/>
-	<div id="result"></div>
+	<div id="result" style="font-weight:bold"></div>
 </div>
 
 <script>
@@ -31,21 +36,18 @@ function dice() {
 }
 
 function combat(attacker, defender) {
-	console.log('------>', attacker, defender)
 	for (;;) {
 		//--- combat ends if attacker has 1 army or defender has 0 armies
 		if (attacker <= 1)
-			return true
-		if (defender <= 0)
 			return false
+		if (defender <= 0)
+			return true
 
 		//--- throw dice, sort by largest first
 		a = Array(Math.min(attacker, 3)).fill().map(() => dice())
 		d = Array(Math.min(attacker, 2)).fill().map(() => dice())
 		a = a.sort((i, j) => j - i)
 		d = d.sort((i, j) => j - i)
-		console.log('attacker dice', a)
-		console.log('defender dice', d)
 		
 		//--- remove armies based on dice
 		if (a[0] > d[0])
@@ -53,7 +55,7 @@ function combat(attacker, defender) {
 		else
 			attacker--
 
-		if (a.size >= 2 && d.size >= 2) {
+		if (a.length >= 2 && d.length >= 2) {
 			if (a[1] > d[1])
 				defender--
 			else
@@ -68,9 +70,11 @@ function multipleCombat(attacker, defender, runs) {
 	let attackerWins = 0
 	for (let i = 0; i < runs; i++) {
 		console.log('run', i)
-		attackerWins += combat(attacker, defender)
+		j = combat(attacker, defender)
+		attackerWins += j
+		console.log('returned', j,'so attackerWins now', attackerWins)
 	}
-	return "Attacker wins " + Math.round(100 * attackerWins / runs)
+	return "Attacker wins " + Math.round(100 * attackerWins / runs) + '%'
 }
 
 //----------------------------------------------------------------------
