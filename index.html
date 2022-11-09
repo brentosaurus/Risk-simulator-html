@@ -13,14 +13,30 @@
 	<h2>Brent's Risk Simulator</h2>
 </div>
 
-<div style="border-style:solid; border-width:1px; padding:0.1in; width:75%; max-width:500px; margin:auto;">
+<div style="border-style:solid; border-width:1px; padding:0.1in; width:75%; max-width:600px; margin:auto;">
 	<span style="width:1.5in; display:inline-block">Attacker armies</span>
-		<input type="range" min="2" max="50" value="5" class="slider" style="width:250px" id="attackers">
+		<input type="range" min="0" max="50" value="5" class="slider" style="width:400px" id="attackers">
 		<label for="attackers" id="attackersLabel"></label>
 	<p/>
 	<span style="width:1.5in; display:inline-block">Defender armies</span>
-		<input type="range" min="1" max="50" value="5" class="slider" style="width:250px" id="defenders">
-		<label for="defenders" id="defendersLabel"></label>
+		<input type="range" min="0" max="50" value="5" class="slider" style="width:400px" id="defenders0">
+		<label for="defenders0" id="defenders0Label"></label>
+	<p/>
+	<span style="width:1.5in; display:inline-block">Defender armies</span>
+		<input type="range" min="0" max="50" value="0" class="slider" style="width:400px" id="defenders1">
+		<label for="defenders1" id="defenders1Label"></label>
+	<p/>
+	<span style="width:1.5in; display:inline-block">Defender armies</span>
+		<input type="range" min="0" max="50" value="0" class="slider" style="width:400px" id="defenders2">
+		<label for="defenders2" id="defenders2Label"></label>
+	<p/>
+	<span style="width:1.5in; display:inline-block">Defender armies</span>
+		<input type="range" min="0" max="50" value="0" class="slider" style="width:400px" id="defenders3">
+		<label for="defenders3" id="defenders3Label"></label>
+	<p/>
+	<span style="width:1.5in; display:inline-block">Defender armies</span>
+		<input type="range" min="0" max="50" value="0" class="slider" style="width:400px" id="defenders4">
+		<label for="defenders4" id="defenders4Label"></label>
 	<p/>
 	<span style="width:1.5in; display:inline-block">Runs</span>
 		<input type="range" min="50" max="1000" value="250" class="slider" id="runs">
@@ -37,40 +53,53 @@ function dice() {
 	return Math.floor(Math.random() * (maximum - minimum + 1)) + minimum
 }
 
-function combat(attacker, defender) {
+function combat(attackers, _defenders) {
+	let countryIndex = 0
+	let defenders = [..._defenders] // make copy so input array is unaffected
+
 	for (;;) {
-		//--- combat ends if attacker has 1 army or defender has 0 armies
-		if (attacker <= 1)
+		console.log({attackers, defenders})
+		//--- defeat if attacker no longer has 2+ armies (can't attack if just 1)
+		if (attackers <= 1)
 			return false
-		if (defender <= 0)
-			return true
+		//--- figure out what to do if no defenders left in this country
+		while (defenders[countryIndex] <= 0) {
+			--attackers // attackers must leave an army behind
+			++countryIndex // move to next country
+			if (countryIndex >= defenders.length) // victory if conquering all countries
+				return true
+			if (defenders[countryIndex] <= 0) // victory if reached a country with 0 defenders
+				return true
+			if (attackers <= 1)
+				return false
+		}
 
 		//--- throw dice, sort by largest first
-		a = Array(Math.min(attacker, 3)).fill().map(() => dice())
-		d = Array(Math.min(attacker, 2)).fill().map(() => dice())
+		a = Array(Math.min(attackers, 3)).fill().map(() => dice())
+		d = Array(Math.min(defenders.length, 2)).fill().map(() => dice())
 		a = a.sort((i, j) => j - i)
 		d = d.sort((i, j) => j - i)
 		
 		//--- remove armies based on dice
 		if (a[0] > d[0])
-			defender--
+			defenders[countryIndex]--
 		else
-			attacker--
+			attackers--
 
 		if (a.length >= 2 && d.length >= 2) {
 			if (a[1] > d[1])
-				defender--
+				defenders[countryIndex]--
 			else
-				attacker--
+				attackers--
 		}
 	}
 }
 
 //----------------------------------------------------------------------
-function multipleCombat(attacker, defender, runs) {
+function multipleCombat(attacker, defenders, runs) {
 	let attackerWins = 0
 	for (let i = 0; i < runs; i++) {
-		j = combat(attacker, defender)
+		j = combat(attacker, defenders)
 		attackerWins += j
 	}
 	return "Attacker wins " + Math.round(100 * attackerWins / runs) + '%'
@@ -78,18 +107,32 @@ function multipleCombat(attacker, defender, runs) {
 
 //----------------------------------------------------------------------
 function updateAll() {
-	const attackers = document.getElementById("attackers")
-	const defenders = document.getElementById("defenders")
-	const runs = document.getElementById("runs")
+	document.getElementById("attackersLabel").innerHTML = document.getElementById("attackers").value
+	document.getElementById("defenders0Label").innerHTML = document.getElementById("defenders0").value
+	document.getElementById("defenders1Label").innerHTML = document.getElementById("defenders1").value
+	document.getElementById("defenders2Label").innerHTML = document.getElementById("defenders2").value
+	document.getElementById("defenders3Label").innerHTML = document.getElementById("defenders3").value
+	document.getElementById("defenders4Label").innerHTML = document.getElementById("defenders4").value
+	document.getElementById("runsLabel").innerHTML = document.getElementById("runs").value
 
-	document.getElementById("attackersLabel").innerHTML = attackers.value
-	document.getElementById("defendersLabel").innerHTML = defenders.value
-	document.getElementById("runsLabel").innerHTML = runs.value
-
-	document.getElementById("result").innerHTML = multipleCombat(attackers.value, defenders.value, runs.value)
+	const defenders = [
+		document.getElementById("defenders0").value,
+		document.getElementById("defenders1").value,
+		document.getElementById("defenders2").value,
+		document.getElementById("defenders3").value,
+		document.getElementById("defenders4").value
+	]
+	document.getElementById("result").innerHTML = multipleCombat(
+		document.getElementById("attackers").value,
+		defenders,
+		document.getElementById("runs").value)
 }
 document.getElementById("attackers").oninput = updateAll
-document.getElementById("defenders").oninput = updateAll
+document.getElementById("defenders0").oninput = updateAll
+document.getElementById("defenders1").oninput = updateAll
+document.getElementById("defenders2").oninput = updateAll
+document.getElementById("defenders3").oninput = updateAll
+document.getElementById("defenders4").oninput = updateAll
 document.getElementById("runs").oninput = updateAll
 
 updateAll()
