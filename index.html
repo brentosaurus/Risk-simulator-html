@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Brent's Risk Simulator</title>
+<title>Brent's Risk Simulator 2</title>
 </head>
 <style>
 	body {
@@ -10,7 +10,7 @@
 </style>
 <body>
 <div style="margin:auto; text-align:center">
-	<h2>Brent's Risk Simulator</h2>
+	<h2>Brent's Risk Simulator 2</h2>
 </div>
 
 <div style="border-style:solid; border-width:1px; padding:0.1in; width:75%; max-width:600px; margin:auto;">
@@ -58,7 +58,8 @@ function combat(attackers, _defenders) {
 	let defenders = [..._defenders] // make copy so input array is unaffected
 
 	for (;;) {
-		console.log({attackers, defenders})
+		//console.log({attackers, defenders})
+
 		//--- defeat if attacker no longer has 2+ armies (can't attack if just 1)
 		if (attackers <= 1)
 			return false
